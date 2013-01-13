@@ -1,0 +1,392 @@
+<html lang="en-US">
+	<head>
+    	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+    	<title>Philosophus</title>
+        <style>
+			p {margin:0; padding: 0;} 
+      		body {
+        		margin: 0px;
+        		padding: 0px;
+				overflow:hidden;
+      		}
+			input{
+    			text-align:center !important;
+				background:none; 
+				outline: none !important;
+				border:none;
+			}
+			font{
+				font-family:"Times New Roman", Times, serif;
+			}
+			*.unselectable {
+   				-moz-user-select: -moz-none;
+  				-khtml-user-select: none;
+   				-webkit-user-select: none;
+   				-ms-user-select: none;
+   				
+			}
+			*.signup {
+				visibility:hidden;
+			}
+			#mind1 {position: absolute; left: 0; top: 0; z-index: 1;}
+			#title {position: absolute; left: 100; z-index: 2; text-align:center}
+			#username {position:absolute; z-index:3;}
+			#password {position:absolute; z-index:4;}
+			#table {position:absolute; z-index:5;}
+    	</style>
+        <script type="text/javascript">
+		 
+		var main = function(){
+			var canvas	= null;
+			var cxt 	= null;
+			var x 		= [];
+			var y 		= [];
+			var signupx = null;
+			var signupy	= null;
+			var signupvx= null;
+			var signupvy= null;
+			var signupax= null;
+			var signupay= null;
+			var radii 	= [];
+			var ax	 	= [];
+			var ay 		= [];
+			var vx 		= [];
+			var vy 		= []; 
+			var vxinit 	= [];
+			var vyinit 	= [];
+			var mousex 	= null;
+			var mousey 	= null;
+			var text 	= null;
+			var username= null;
+			var password= null;
+			var table 	= null;
+			var signup 	= null;
+			var login	= null;
+			
+			var username_signup = null;
+			var password_signup = null;
+			var password_confirmation = null;
+			var agreement = null;
+			var agreement_text = null;
+			var signup_title = null;
+			var okay = null;
+			var showSignup = false;
+			window.addEventListener('load',onLoad,false);
+			
+			function onLoad(e){
+				canvas = document.getElementById('mind1');
+				cxt = canvas.getContext('2d');
+				
+				
+				
+				canvas.width = window.innerWidth;
+				canvas.height= window.innerHeight;
+				setCircles();
+				
+				//login box
+				text = document.getElementById('title');
+				username = document.getElementById('username');
+				password = document.getElementById('password');
+				signup = document.getElementById('signup');
+				login = document.getElementById('login');
+				table = document.getElementById('table');
+				
+				//signup box
+				username_signup = document.getElementById('username_signup');
+				password_signup = document.getElementById('password_signup');
+				password_confirmation = document.getElementById('password_confirmation');
+				agreement = document.getElementById('agreement');
+				agreement_text = document.getElementById('agreement_text');
+				signup_title = document.getElementById('signup_title');
+				okay = document.getElementById('okay');
+				
+				signupy = window.innerHeight;
+				signupvy=1;
+				signupay=1;
+				
+				text.style.width= 157;
+				username.style.width= 147;
+				password.style.width = 147;
+				table.style.width = 105
+				username_signup.style.width = 147;
+				username_signup.style.height = 20;
+				password_signup.style.width = 147;
+				password_signup.style.heignt = 20;
+				password_confirmation.style.width = 147;
+				password_confirmation.style.heignt = 20;
+				username.style.height = 20
+				okay.style.width = 40;
+				signup_title.style.width = 147;
+				password.style.height = 20;
+				
+				draw();
+				
+				canvas.addEventListener('mousemove', onMouseMove, false);
+				login.addEventListener('mousedown', onDownLogin, false);
+				login.addEventListener('mouseover', onOverLogin, false);
+				login.addEventListener('mouseout', onOffLogin, false);
+				signup.addEventListener('mousedown', onDownSignup, false);
+				signup.addEventListener('mouseover', onOverSignup, false);
+				signup.addEventListener('mouseout', onOffSignup, false);
+				okay.addEventListener('mousedown', onDownOkay, false);
+				okay.addEventListener('mouseover', onOverOkay, false);
+				okay.addEventListener('mouseout', onOffOkay, false);
+				setInterval(draw,33);
+			}
+			
+			function onDownLogin(e){
+				console.log("login");
+				document.forms['login'].submit();
+			}
+			function onOverLogin(e){
+				console.log("over");
+				logintext = document.getElementById("login.text");
+				logintext.style.color = "#000000";
+			}
+			function onOffLogin(e){
+				console.log("off");
+				logintext.style.color = "#979797";
+			}
+			function onDownSignup(e){
+				console.log("signup");
+				signupbox();
+				username_signup.style.visibility = "visible";
+				password_signup.style.visibility = "visible";
+				password_confirmation.style.visibility = "visible";
+				agreement.style.visibility = "visible";
+				agreement_text.style.visibility = "visible";
+				signup_title.style.visibility = "visible";
+				okay.style.visibility = "visible";
+				showSignup = true;
+			}
+			function onOverSignup(e){
+				console.log("over");
+				signuptext = document.getElementById("signup.text");
+				signuptext.style.color = "#000000";
+			}
+			function onOffSignup(e){
+				console.log("off");
+				signuptext.style.color = "#979797";
+			}
+			function onDownOkay(e){
+				
+			}
+			function onOverOkay(e){
+				okay.style.color = "#000000";
+			}
+			function onOffOkay(e){
+				okay.style.color = "#979797";
+			}
+			function setCircles(){
+				for(var i = 0; i <= Math.random()*15 + 5; i++){
+					radii.push(Math.random()*10 + 3);
+				}
+				for(var i = 0; i < radii.length; i++){
+					x.push(Math.random()*canvas.width);
+					y.push(Math.random()*canvas.height);
+					
+				}
+				for(var i = 0; i < radii.length; i++){
+					vx.push(Math.random()*2 - 1);
+					vy.push(Math.random()*2 - 1);
+					ax.push(0);
+					ay.push(0);
+				}
+				vxinit = vx;
+				vyinit = vy;
+			}
+			
+			function draw(){
+				var philosoy = -150;
+				var philosox = 0;
+				var boxx = window.innerWidth/2 - 157/2;
+				var boxyy = window.innerHeight/2 + 20 + philosoy;
+				text.style.left = window.innerWidth/2 - 157/2 + philosox;
+				text.style.top 	= window.innerHeight/2 + philosoy;
+				
+				canvas.width = window.innerWidth;
+				canvas.height= window.innerHeight;
+				
+				
+				username.style.left = window.innerWidth/2 - 147/2 + philosox;
+				username.style.top = window.innerHeight/2 + 20 + philosoy;
+				
+				
+				
+				password.style.left = window.innerWidth/2 - 147/2 + philosox;
+				password.style.top = window.innerHeight/2 + 41 + philosoy;
+				
+				table.style.left = window.innerWidth/2 - 105/2 + philosox;
+				table.style.top	 = window.innerHeight/2 + 61 + philosoy;
+				cxt.clearRect(0,0,canvas.width,canvas.height);
+				cxt.save();
+				cxt.beginPath();
+				cxt.moveTo(boxx,boxyy+10);
+				
+				
+				cxt.lineTo(boxx,boxyy+31);
+				cxt.moveTo(boxx+10,boxyy+41);
+				
+				
+				//cxt.lineTo(boxx+147,boxyy+41);
+				cxt.moveTo(boxx+157,boxyy+31);
+				cxt.lineTo(boxx+157,boxyy+10);
+				cxt.moveTo(boxx+147,boxyy);
+				//cxt.lineTo(boxx+10,boxyy);
+				cxt.moveTo(boxx,boxyy+10);
+				//cxt.arc(boxx+10,boxyy+10,10,Math.PI,3*Math.PI/2);
+				cxt.moveTo(boxx+10,boxyy+41);
+				//cxt.arc(boxx+10,boxyy+31,10,Math.PI/2,Math.PI);
+				cxt.moveTo(boxx+157,boxyy+31);
+				//cxt.arc(boxx+147,boxyy+31,10,2*Math.PI,Math.PI/2);
+				cxt.moveTo(boxx+147,boxyy);
+				//cxt.arc(boxx+147,boxyy+10,10,3*Math.PI/2,2*Math.PI);
+				cxt.stroke();
+				
+				cxt.restore();
+				for(var i=0; i < radii.length; i++){
+						cxt.save();
+						cxt.beginPath();
+						cxt.arc(x[i],y[i],radii[i],0,Math.PI*2);
+						cxt.stroke();
+						cxt.closePath();
+						cxt.restore();
+						
+						
+						if(Math.sqrt((x[i] - mousex)*(x[i] - mousex) + (y[i] - mousey)*(y[i] - mousey)) < radii[i] + 30){
+							ax[i] = (-x[i] + mousex)*.01
+							ay[i] = (-y[i] + mousey)*.01
+							if(Math.abs(vx[i]) > 2.5){
+								ax[i] = 0;
+								if(vx[i] > 0){
+									vx[i] = 2.4;
+								}else{
+									vx[i] = -2.4;
+								}
+							}
+							if(Math.abs(vy[i]) > 2.5){
+								ay[i] = 0;
+								if(vy[i] > 0){
+									vy[i] = 2.4;
+								}else{
+									vy[i] = -2.4;
+								}
+							}
+						}else{
+							ax[i] = 0;
+							ay[i] = 0;
+							
+						}
+						
+						vx[i] += ax[i];
+						vy[i] += ay[i];
+						x[i]+= vx[i];
+						y[i]+= vy[i];
+						if(x[i]-radii[i] > canvas.width){
+							x[i] = -radii[i]
+						}
+						if(x[i] + radii[i] < 0){
+							x[i] = canvas.width + radii[i];
+						}
+						if(y[i] - radii[i] > canvas.height){
+							y[i] = -radii[i];
+						}
+						if(y[i] + radii[i] < 0){
+							y[i] = canvas.height + radii[i];
+						}
+				}
+				if(showSignup){
+					signupbox();
+				}
+			
+			}
+			
+			function signupbox(){
+				signupx = window.innerWidth/2 - 179/2;
+				
+				signup_title.style.top = signupy;
+				username_signup.style.top = 21 + signupy;
+				password_signup.style.top = 42 + signupy;
+				password_confirmation.style.top = 63+signupy;
+				
+				username_signup.style.left = 16+signupx;
+				password_signup.style.left = 16+signupx;
+				password_confirmation.style.left = 16+signupx;
+				
+				signup_title.style.left = 16+signupx;
+				
+				agreement.style.top	= 84+signupy;
+				agreement.style.left = signupx;
+				agreement_text.style.top = 84+signupy;
+				agreement_text.style.left = 20+signupx;
+				
+				okay.style.top = 105+signupy;
+				okay.style.left = 68+signupx;
+				
+				cxt.save();
+				//cxt.rect(signupx,signupy,183,104);
+				//cxt.stroke();
+				cxt.beginPath();
+				cxt.moveTo(6+signupx,31+signupy);
+				cxt.lineTo(6+signupx,74+signupy);
+				cxt.moveTo(173+signupx,31+signupy);
+				cxt.lineTo(173+signupx,74+signupy);
+				cxt.stroke();
+				cxt.closePath();
+				cxt.restore();
+				signupay = (signupy - window.innerHeight/2 + 30)*0.1;
+
+				if(signupy - window.innerHeight/2 + 30> 0){
+					signupvy -= signupay;
+				}else{
+					signupvy -= signupay;
+				}
+
+				signupvy *= .73;
+				signupy += signupvy;
+			}
+			
+			function onMouseMove(e){
+				if(e.offsetX) {
+        			mousex = e.offsetX;
+        			mousey = e.offsetY;
+    			}
+    			else if(e.layerX) {
+        			mousex = e.layerX;
+        			mousey = e.layerY;
+    			}
+				
+			}
+		}
+		main();
+		</script>
+	</head>
+	<body>
+    <canvas id = "mind1" width = "500" height = "300" style = "z-index: 0;">
+        	Your browser does not support HTML5 canvas.
+        </canvas>
+    	<font  id = "title" class = "unselectable"> P H I L O S O P H U S 
+        </font>
+        <table id="table">
+        	<tr class="unselectable">
+            	<td id="login"><font id="login.text" color="#979797" size = "2" style="text-align:center; cursor:pointer" class="unselectable">| login |</font></td>
+                <td id="signup"><font id="signup.text" color="#979797" size = "2" style="text-align:center; cursor:pointer" class="unselectable">| signup |</font></td>
+            </tr>
+        </table>
+        <form class = "unselectable" name = "login" method="post" action="login.php">
+        	<input id="username" name = "username" type = "text" placeholder = "email">
+            </input>
+            <input type = "password" name = "password" id = "password" placeholder = "password">
+            </input>
+        </form>
+    	<form class ="unselectable" name = "signup" method="post" action="signup.php">
+        	<font id="signup_title" style="position:absolute; text-align:center; visibility:hidden">S I G N - U P</font>
+   	  		<input class = "signup" type = "text" id = "username_signup" name = "username_signup" style = "position: absolute; z-index: 6;" placeholder = "email"></input>
+  			<input class = "signup" type = "password" id = "password_signup" name = "password_signup" style = "position: absolute; z-index: 7;" placeholder = "password"></input>
+            <input class = "signup" type="password" id = "password_confirmation" name = "password_confirmation" style="position: absolute; z-index: 7;" placeholder = "confirm password"></input>
+            <input class = "signup" type="checkbox" id = "agreement" name = "agreement" style = "position: absolute; z-index: 8;"><font class = "signup" id = "agreement_text" size="2" color="#979797" style="position:absolute">I agree to the <a href="termsofservice.php" style="color:#979797;">Terms of Service</a></font></input>
+            <font class = "signup" id = "okay" size = "2" color = "#979797" style="position:absolute; text-align:center; cursor:pointer;">| okay |</font>
+      	</form>
+	</body>
+</html>
